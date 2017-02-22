@@ -1,0 +1,87 @@
+html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background-color: #fff;
+}
+
+.wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.clearfix {
+    content: ".";
+    display: block;
+    border: 0 !important;
+    clear: both;
+    float: none !important;
+    visibility: hidden;
+    height: 0 !important;
+    line-height: 0 !important;
+}
+
+#minesweeper > div {
+    float: left;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    background-color: #dddddd;
+    border: 2px solid #bbb;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.empty_cell {
+    background-color: #ffffff !important;
+}
+
+.cell_mine {
+    background-color: #a80114 !important;
+    color: #ffffff;
+}
+
+.cell_number_1 {
+    background-color: #fff !important;
+    color: #00ff09;
+}
+
+.cell_number_2 {
+    background-color: #fff !important;
+    color: #e7ff00;
+}
+
+.cell_number_3 {
+    background-color: #fff !important;
+    color: #ffac00;
+}
+
+.cell_number_4 {
+    background-color: #fff !important;
+    color: #ff1800;
+}
+
+@media screen and (orientation:portrait) {
+    #minesweeper {
+        width: 100vw;
+        height: 100vw;
+    }
+}
+
+@media screen and (orientation:landscape) {
+    #minesweeper {
+        width: 100vh;
+        height: 100vh;
+        float: left;
+    }
+    #score {
+        /*margin-left: calc(-100vw / 2 + 500px / 2);*/
+        float: left;
+    }
+}
