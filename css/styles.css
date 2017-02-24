@@ -16,26 +16,36 @@ body {
     width: 100%;
 }
 
-.clearfix {
-    content: ".";
-    display: block;
-    border: 0 !important;
-    clear: both;
-    float: none !important;
-    visibility: hidden;
-    height: 0 !important;
-    line-height: 0 !important;
+header {
+    /*height: 3em;*/
+}
+
+.table {
+    display: table;
+}
+
+.row {
+    display: table-row;
+}
+
+.cell {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#minesweeper {
+    display: table;
+    table-layout: fixed;
 }
 
 #minesweeper > div {
-    float: left;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
+    display: table-row;
+}
+
+#minesweeper > div > div {
     background-color: #dddddd;
     border: 2px solid #bbb;
-    vertical-align: middle;
-    text-align: center;
 }
 
 .empty_cell {

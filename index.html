@@ -3,17 +3,26 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
         <title>-</title>
-        <link rel="manifest" href="manifest.json">
+        <link rel="manifest" href="manifest.json" />
 
         <link rel="stylesheet" href="css/styles.css" type="text/css" />
         <script type="text/javascript" src="js/minesweeper.js"></script>
     </head>
     <body>
+        <header>
+            <div class="toolbar" id="toolbar-annotate">
+                <div class="right">
+                    <button id="btn-flag" data-active="0"><img src="images/flag.svg" alt="Flag" />Flag</button>
+                    <button id="btn-options"><img src="images/options.svg" alt="Options" />Options</button>
+                    <button id="btn-reset"><img src="images/reset.svg" alt="Reset" />Reset</button>
+                </div>
+            </div>
+        </header>
         <div class="wrapper">
-            <div id="minesweeper">
+            <div id="minesweeper" class="table">
             </div>
             <div id="score">0</div>
         </div>

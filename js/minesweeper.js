@@ -1,10 +1,12 @@
-simon = {
+minesweeper = {
     rootElement: 'minesweeper',
-    gridSize: 10,
+    //gridType: 'square', // square / losange / circle / rectangle
+    gridSize: 10, // 10 or {w:10,h:10}
     numberOfMines: 10,
     grid: [],
     mineValue: -1,
     manyMinesOnOnePosition: false,
+    flagEnabled: false,
     aroundPositions: {},
 
     init: function() {
@@ -12,16 +14,21 @@ simon = {
             this.numberOfMines = this.gridSize;
         }
         this.aroundPositions = {
-            'tl': -this.gridSize - 1,
-            't' : -this.gridSize,
-            'tr': -this.gridSize + 1,
-            'l' : -1,
+            'tl': 0 - this.gridSize - 1,
+            't' : 0 - this.gridSize,
+            'tr': 0 - this.gridSize + 1,
+            'l' : 0 - 1,
             'r' : 1,
             'bl': this.gridSize - 1,
             'b' : this.gridSize,
             'br': this.gridSize + 1
         };
 
+        this.reset();
+
+        this.attachButtonEvents();
+    },
+    reset: function() {
         this.grid = Array.apply(null, Array(this.gridSize * this.gridSize)).map(Number.prototype.valueOf, 0);
 
         this.addMines();
@@ -33,8 +40,9 @@ simon = {
             maxLoop = 10000;
         for(var i = 0; i < maxLoop; i++) {
             pos = this.getRandom(0, this.gridSize * this.gridSize - 1);
-            if (this.manyMinesOnOnePosition === true || this.grid[pos] !== this.mineValue) {
-                this.grid[pos] = (this.grid[pos] < 0) ? this.grid[pos] + this.mineValue : this.mineValue;
+
+            if (this.manyMinesOnOnePosition === true || this.grid[pos] > this.mineValue) {
+                this.grid[pos] = (this.grid[pos] <= this.mineValue) ? this.grid[pos] + this.mineValue : this.mineValue;
                 inc++;
                 this.addNumbersAroundPos(pos);
             }
@@ -62,7 +70,7 @@ simon = {
             return false;
         }
 
-        return (this.grid[gridPosition] !== this.mineValue);
+        return (this.grid[gridPosition] > this.mineValue);
     },
     getRandom: function(min, max) {
         min = Math.ceil(min);
@@ -70,78 +78,123 @@ simon = {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     },
     buildGrid() {
-        var c = '', className = '';
-        for(var i = 0; i < this.grid.length; i++) {
-            c = document.createElement('div');
-            c.setAttribute('data-cell-number', i);
-            c.innerHTML = '&nbsp;';
-            document.getElementById(this.rootElement).appendChild(c);
+        var row = '', cell = '', k = 0;
 
-            if (i % this.gridSize === (this.gridSize - 1)) {
-                c = document.createElement('div');
-                c.className = 'clearfix';
-                document.getElementById(this.rootElement).appendChild(c);
+        for (var i = 0; i < this.gridSize; i++) {
+            row = document.createElement('div');
+            row.className = 'row';
+
+            for (var j = 0; j < this.gridSize; j++) {
+                cell = document.createElement('div');
+                cell.setAttribute('data-cell-number', k);
+                cell.className = 'cell';
+                cell.innerHTML = '&nbsp;';
+                row.appendChild(cell);
+
+                k++;
             }
+            document.getElementById(this.rootElement).appendChild(row);
         }
     },
-    play() {
+    getScore: function() {
+        var visiblesElements = document.querySelectorAll('div[data-visible="1"]').length;
+
+        return this.grid.length - visiblesElements - this.mineValue;
+    },
+    refreshScore: function() {
+        document.getElementById('score').innerHTML = this.getScore();
+    },
+    play: function() {
         var self = this;
-        document.getElementById(this.rootElement).addEventListener('click', function(event) {
-            self.showCell(event.target);
+        document.getElementById(this.rootElement).addEventListener('click', function(e) {
+            e.preventDefault();
+
+            self.showCell(e.target);
         }, self);
 
-        document.getElementById(this.rootElement).addEventListener('touch', function(event) {
-            self.showCell(event.target);
+        document.getElementById(this.rootElement).addEventListener('touch', function(e) {
+            e.preventDefault();
+
+            self.showCell(e.target);
+        }, self);
+    },
+    attachButtonEvents: function() {
+        var self = this;
+
+        document.getElementById('btn-flag').addEventListener('click', function(e) {
+            self.flagEnabled = !parseInt(e.target.getAttribute('data-active'));
+            e.target.setAttribute('data-active', self.flagEnabled * 1);
+
+            e.preventDefault();
+        }, self);
+
+        document.getElementById('btn-options').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            /* @todo */
+        }, self);
+
+        document.getElementById('btn-reset').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            self.reset();
         }, self);
     },
     showCell(elm) {
+        var cellPosition = parseInt(elm.getAttribute('data-cell-number')),
+            cellValue = this.grid[cellPosition],
+            hasFlag = parseInt(elm.getAttribute('data-has-flag')),
+            flag = 0,
+            isVisible = parseInt(elm.getAttribute('data-visible')),
+            innerHtml = '&nbsp;',
+            className = 'empty_cell';
+
         if (
-            typeof elm.getAttribute('data-cell-number') !== 'undefined' &&
-            this.grid[parseInt(elm.getAttribute('data-cell-number'))] !== 'undefined'
+            typeof elm.getAttribute('data-cell-number') === 'undefined' ||
+            this.grid[parseInt(elm.getAttribute('data-cell-number'))] === 'undefined' ||
+            isVisible === 1
         ) {
-            var cellPosition = parseInt(elm.getAttribute('data-cell-number')),
-                cellValue = this.grid[cellPosition],
-                innerHtml = '',
-                className = '';
-
-            if (elm.getAttribute('data-has-flag') === '1') {
-                elm.setAttribute('data-has-flag', '0');
-                return;
-            }
-
-            if (elm.getAttribute('data-visible') === '1') {
-                return;
-            }
-
-            elm.setAttribute('data-visible', '1');
-
-            if (cellValue === 0) {
-                innerHtml = '&nbsp;';
-                className = 'empty_cell';
-
-                // Recursive show around cells
-                for (var i in this.aroundPositions) {
-                    if (this.isAvailablePosition(i, cellPosition, this.aroundPositions[i])) {
-                        var c = document.querySelectorAll('div[data-cell-number="' + (cellPosition + this.aroundPositions[i]) + '"]')[0];
-                        this.showCell(c);
-                    }
-                }
-            } else if (cellValue > 0) {
-                innerHtml = cellValue;
-                className = 'cell_number_' + cellValue;
-            } else {
-                innerHtml = 'X';
-                className = 'cell_mine';
-            }
-
-            elm.innerHTML = innerHtml;
-            elm.className = className;
+            return;
         }
+
+        if (hasFlag > 0) {
+            flag = hasFlag - 1;
+        } else if (this.flagEnabled) {
+            flag = 2;
+        }
+
+        if (flag > 0) {
+            elm.setAttribute('data-has-flag', flag);
+            elm.className = 'flag_' . flag;
+            return;
+        }
+
+        elm.setAttribute('data-visible', 1);
+
+        if (cellValue === 0) {
+            // Recursive show around cells
+            for (var i in this.aroundPositions) {
+                if (this.isAvailablePosition(i, cellPosition, this.aroundPositions[i])) {
+                    var c = document.querySelectorAll('div[data-cell-number="' + (cellPosition + this.aroundPositions[i]) + '"]')[0];
+                    this.showCell(c);
+                }
+            }
+        } else if (cellValue > 0) {
+            innerHtml = cellValue;
+            className = 'cell_number_' + cellValue;
+        } else {
+            innerHtml = 'X';
+            className = 'cell_mine';
+        }
+
+        elm.innerHTML = innerHtml;
+        elm.className += ' ' + className;
+
     }
 };
 
-document.addEventListener("DOMContentLoaded", function(event) {
-    simon.init();
+document.addEventListener("DOMContentLoaded", function(e) {
+    minesweeper.init();
 
-    simon.play();
+    minesweeper.play();
 });
