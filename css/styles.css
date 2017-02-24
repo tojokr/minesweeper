@@ -35,8 +35,9 @@ header {
 }
 
 #minesweeper {
-    display: table;
     table-layout: fixed;
+    max-width: 400px;
+    max-height: 400px;
 }
 
 #minesweeper > div {
@@ -79,15 +80,15 @@ header {
 
 @media screen and (orientation:portrait) {
     #minesweeper {
-        width: 100vw;
-        height: 100vw;
+        width: calc(100vw - 2em);
+        height: calc(100vw - 2em);
     }
 }
 
 @media screen and (orientation:landscape) {
     #minesweeper {
-        width: 100vh;
-        height: 100vh;
+        width: calc(100vh - 2em);
+        height: calc(100vh - 2em);
         float: left;
     }
     #score {
