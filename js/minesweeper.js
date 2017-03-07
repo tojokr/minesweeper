@@ -30,6 +30,10 @@ minesweeper = {
     },
     reset: function() {
         this.grid = Array.apply(null, Array(this.gridSize * this.gridSize)).map(Number.prototype.valueOf, 0);
+        document.getElementById(this.rootElement).innerHTML = '';
+
+        document.getElementById('gameover-popin').classList.add('hidden');
+        document.getElementById('minesweeper').classList.remove('disable');
 
         this.addMines();
         this.buildGrid();
@@ -82,12 +86,12 @@ minesweeper = {
 
         for (var i = 0; i < this.gridSize; i++) {
             row = document.createElement('div');
-            row.className = 'row';
+            row.classList.add('row');
 
             for (var j = 0; j < this.gridSize; j++) {
                 cell = document.createElement('div');
                 cell.setAttribute('data-cell-number', k);
-                cell.className = 'cell';
+                cell.classList.add('cell');
                 cell.innerHTML = '&nbsp;';
                 row.appendChild(cell);
 
@@ -99,10 +103,10 @@ minesweeper = {
     getScore: function() {
         var visiblesElements = document.querySelectorAll('div[data-visible="1"]').length;
 
-        return this.grid.length - visiblesElements - this.mineValue;
+        return Math.round(visiblesElements / (this.grid.length - this.numberOfMines) * 100);
     },
     refreshScore: function() {
-        document.getElementById('score').innerHTML = this.getScore();
+        document.getElementById('score_complete').style.width = this.getScore() + '%';
     },
     play: function() {
         var self = this;
@@ -139,9 +143,18 @@ minesweeper = {
 
             self.reset();
         }, self);
+
+        document.getElementById('gameover-popin').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            e.stopPropagation();
+            e.target.classList.add('hidden');
+            self.reset();
+        }, self);
     },
     showCell(elm) {
-        var cellPosition = parseInt(elm.getAttribute('data-cell-number')),
+        var self = this,
+            cellPosition = parseInt(elm.getAttribute('data-cell-number')),
             cellValue = this.grid[cellPosition],
             hasFlag = parseInt(elm.getAttribute('data-has-flag')),
             flag = 0,
@@ -163,9 +176,10 @@ minesweeper = {
             flag = 2;
         }
 
-        if (flag > 0) {
+        elm.classList.remove('flag_0', 'flag_1', 'flag_2');
+        if (flag > 0 || this.flagEnabled) {
             elm.setAttribute('data-has-flag', flag);
-            elm.className = 'flag_' . flag;
+            elm.classList.add('flag_' . flag);
             return;
         }
 
@@ -185,11 +199,20 @@ minesweeper = {
         } else {
             innerHtml = 'X';
             className = 'cell_mine';
+
+            this.gameOver();
         }
 
         elm.innerHTML = innerHtml;
-        elm.className += ' ' + className;
+        elm.classList.add(className);
 
+        if (cellValue >= 0) {
+            this.refreshScore();
+        }
+    },
+    gameOver: function() {
+        document.getElementById('gameover-popin').classList.remove('hidden');
+        document.getElementById('minesweeper').classList.add('disable');
     }
 };
 

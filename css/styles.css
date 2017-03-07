@@ -11,13 +11,13 @@ body {
     background-color: #fff;
 }
 
-.wrapper {
-    height: 100%;
-    width: 100%;
+header {
+    height: 2em;
 }
 
-header {
-    /*height: 3em;*/
+.toolbar {
+    margin: 0 auto;
+    max-width: 400px;
 }
 
 .table {
@@ -34,6 +34,30 @@ header {
     text-align: center;
 }
 
+.hidden {
+    display: none;
+}
+
+.disable {
+    pointer-events: none;
+}
+
+#score {
+    margin: 0 auto;
+    max-width: 400px;
+    height: 5px;
+    background-color: #ccc;
+    position: relative;
+}
+
+#score_complete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #01a819;
+    height: 5px;
+}
+
 #minesweeper {
     table-layout: fixed;
     max-width: 400px;
@@ -46,7 +70,8 @@ header {
 
 #minesweeper > div > div {
     background-color: #dddddd;
-    border: 2px solid #bbb;
+    border: 3px outset #bbb;
+    cursor: pointer;
 }
 
 .empty_cell {
@@ -78,10 +103,28 @@ header {
     color: #ff1800;
 }
 
+#gameover-popin {
+    border: 5px solid #fff;
+    background-color: #888;
+    color: #fff;
+    font-weight: bold;
+    position: absolute;
+    top: 20%;
+    max-width: 400px;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 1em;
+}
+
 @media screen and (orientation:portrait) {
     #minesweeper {
-        width: calc(100vw - 2em);
-        height: calc(100vw - 2em);
+        width: 100vw;
+        height:100vw;
+    }
+
+    #gameover-popin {
+        width: 60vw;
+        left: calc(50% - 5px);
     }
 }
 
@@ -89,10 +132,11 @@ header {
     #minesweeper {
         width: calc(100vh - 2em);
         height: calc(100vh - 2em);
-        float: left;
+        margin: 0 auto;
     }
-    #score {
-        /*margin-left: calc(-100vw / 2 + 500px / 2);*/
-        float: left;
+
+    #gameover-popin {
+        width: 60vh;
+        left: calc(50% - 30vh - 5px);
     }
 }

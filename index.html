@@ -15,16 +15,15 @@
         <header>
             <div class="toolbar" id="toolbar-annotate">
                 <div class="right">
-                    <button id="btn-flag" data-active="0"><img src="images/flag.svg" alt="Flag" />Flag</button>
-                    <button id="btn-options"><img src="images/options.svg" alt="Options" />Options</button>
-                    <button id="btn-reset"><img src="images/reset.svg" alt="Reset" />Reset</button>
+                    <button id="btn-flag" data-active="0">Flag</button>
+                    <button id="btn-options">Options</button>
+                    <button id="btn-reset">Reset</button>
                 </div>
             </div>
+            <div id="score"><div id="score_complete"></div></div>
         </header>
-        <div class="wrapper">
-            <div id="minesweeper" class="table">
-            </div>
-            <div id="score">0</div>
+        <div id="minesweeper" class="table">
         </div>
+        <div id="gameover-popin" class="hidden">Game-Over</div>
     </body>
 </html>
