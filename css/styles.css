@@ -110,7 +110,8 @@ header {
     font-weight: bold;
     position: absolute;
     top: 20%;
-    max-width: 400px;
+    left: calc(50% - 100px - 5px);
+    width: 200px;
     padding: 20px 0;
     text-align: center;
     font-size: 1em;
@@ -121,11 +122,6 @@ header {
         width: 100vw;
         height:100vw;
     }
-
-    #gameover-popin {
-        width: 60vw;
-        left: calc(50% - 5px);
-    }
 }
 
 @media screen and (orientation:landscape) {
@@ -133,10 +129,5 @@ header {
         width: calc(100vh - 2em);
         height: calc(100vh - 2em);
         margin: 0 auto;
-    }
-
-    #gameover-popin {
-        width: 60vh;
-        left: calc(50% - 30vh - 5px);
     }
 }
